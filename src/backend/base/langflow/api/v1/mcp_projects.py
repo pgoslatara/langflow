@@ -69,7 +69,7 @@ from langflow.services.database.models.api_key.crud import check_key, create_api
 from langflow.services.database.models.api_key.model import ApiKey, ApiKeyCreate
 from langflow.services.database.models.user.crud import get_user_by_username
 from langflow.services.database.models.user.model import User
-from langflow.services.deps import get_service
+from langflow.services.deps import get_service, get_settings_service
 
 # Constants
 ALL_INTERFACES_HOST = "0.0.0.0"  # noqa: S104
@@ -1200,13 +1200,18 @@ async def _get_mcp_composer_auth_config(project) -> dict:
     return auth_config
 
 
+settings = get_settings_service().settings
+streamable_http_stateless = settings.mcp_streamable_http_stateless
+
 # Project-specific MCP server instance for handling project-specific tools
 class ProjectMCPServer:
     def __init__(self, project_id: UUID):
         self.project_id = project_id
         self.server = Server(f"langflow-mcp-project-{project_id}")
-        # TODO: implement an environment variable to enable/disable stateless mode
-        self.session_manager = StreamableHTTPSessionManager(self.server, stateless=True)
+        self.session_manager = StreamableHTTPSessionManager(
+            app=self.server,
+            stateless=streamable_http_stateless
+            )
         # since we lazily initialize the session manager's lifecycle
         # via .run(), which can only be called once, otherwise an error is raised,
         # we use the lock to prevent race conditions on concurrent requests to prevent such an error
