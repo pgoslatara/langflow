@@ -161,6 +161,7 @@ async def handle_messages(request: Request):
 # Streamable HTTP Transport
 ################################################################################
 
+
 class StreamableHTTP:
     def __init__(self):
         self.session_manager: StreamableHTTPSessionManager | None = None
@@ -196,9 +197,8 @@ class StreamableHTTP:
             try:
                 settings = get_settings_service().settings
                 self.session_manager = StreamableHTTPSessionManager(
-                    app=server,
-                    stateless=settings.mcp_streamable_http_stateless
-                    )
+                    app=server, stateless=settings.mcp_streamable_http_stateless
+                )
                 self._mgr_ready = asyncio.Event()
                 self._mgr_close = asyncio.Event()
                 self._mgr_task = asyncio.create_task(self._start_session_manager())

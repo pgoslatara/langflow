@@ -1200,7 +1200,6 @@ async def _get_mcp_composer_auth_config(project) -> dict:
     return auth_config
 
 
-
 # Project-specific MCP server instance for handling project-specific tools
 class ProjectMCPServer:
     def __init__(self, project_id: UUID):
@@ -1208,9 +1207,8 @@ class ProjectMCPServer:
         self.server = Server(f"langflow-mcp-project-{project_id}")
         settings = get_settings_service().settings
         self.session_manager = StreamableHTTPSessionManager(
-            app=self.server,
-            stateless=settings.mcp_streamable_http_stateless
-            )
+            app=self.server, stateless=settings.mcp_streamable_http_stateless
+        )
         # since we lazily initialize the session manager's lifecycle
         # via .run(), which can only be called once, otherwise an error is raised,
         # we use the lock to prevent race conditions on concurrent requests to prevent such an error
