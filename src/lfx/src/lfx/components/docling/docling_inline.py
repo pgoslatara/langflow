@@ -151,7 +151,12 @@ class DoclingInlineComponent(BaseFileComponent):
             self.log("Waiting for thread to complete")
             worker.join(timeout=timeout_terminate)
             if worker.is_alive():
-                self.log("Warning: Thread still alive after timeout")
+                self.log(
+                    "Warning: Thread still alive after timeout; it will continue running "
+                    "in the background and cannot be forcefully terminated. "
+                    "This may indicate a stuck operation and can require manual intervention "
+                    "(for example, restarting the process)."
+                )
         else:
             # Process termination
             self.log("Attempting graceful process termination with SIGTERM")
