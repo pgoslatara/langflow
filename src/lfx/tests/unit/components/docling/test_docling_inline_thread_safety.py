@@ -7,6 +7,16 @@ from queue import Queue as ThreadQueue
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
+
+try:
+    from docling_core.types.doc import DoclingDocument  # noqa: F401
+
+    DOCLING_AVAILABLE = True
+except ImportError:
+    DOCLING_AVAILABLE = False
+    # Skip entire module if docling not available
+    pytest.skip("docling_core not installed", allow_module_level=True)
+
 from lfx.components.docling.docling_inline import DoclingInlineComponent
 
 
